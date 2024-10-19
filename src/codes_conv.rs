@@ -2,7 +2,6 @@
 use crate::keycodes::linux::key_from_code as linux_key_from_code;
 #[cfg(target_os = "macos")]
 use crate::keycodes::macos::key_from_code as macos_key_from_code;
-#[cfg(any(target_os = "windows", target_os = "linux"))]
 use crate::keycodes::macos::virtual_keycodes::*;
 #[cfg(target_os = "windows")]
 use crate::keycodes::windows::key_from_scancode as win_key_from_scancode;
@@ -31,9 +30,8 @@ macro_rules! conv_keycodes {
     };
 }
 
-#[cfg(any(target_os = "windows", target_os = "linux"))]
 #[allow(non_upper_case_globals)]
-fn macos_iso_code_from_keycode(key: Key) -> Option<KeyCode> {
+fn macos_iso_code_from_key(key: Key) -> Option<KeyCode> {
     match macos_code_from_key(key)? {
         kVK_ISO_Section => Some(kVK_ANSI_Grave),
         kVK_ANSI_Grave => Some(kVK_ISO_Section),
@@ -64,7 +62,7 @@ conv_keycodes!(
 conv_keycodes!(
     win_scancode_to_macos_iso_code,
     win_key_from_scancode,
-    macos_iso_code_from_keycode
+    macos_iso_code_from_key
 );
 #[cfg(target_os = "windows")]
 // From Win scancode to android keycode
@@ -90,7 +88,7 @@ conv_keycodes!(
 conv_keycodes!(
     linux_code_to_macos_iso_code,
     linux_key_from_code,
-    macos_iso_code_from_keycode
+    macos_iso_code_from_key
 );
 #[cfg(target_os = "linux")]
 conv_keycodes!(
@@ -127,9 +125,14 @@ conv_keycodes!(
     linux_code_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_macos_iso_code,
+    usb_hide_code_to_macos_code,
     usb_hid_key_from_code,
     macos_code_from_key
+);
+conv_keycodes!(
+    usb_hide_code_to_macos_iso_code,
+    usb_hid_key_from_code,
+    macos_iso_code_from_key
 );
 conv_keycodes!(
     usb_hide_code_to_android_key_code,

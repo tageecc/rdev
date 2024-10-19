@@ -24,8 +24,14 @@ lazy_static::lazy_static! {
     };
 }
 
+#[cfg(target_os = "windows")]
 lazy_static::lazy_static! {
     static ref KEYBOARD: Arc<Mutex<RdevKeyboard>> = Arc::new(Mutex::new(RdevKeyboard::new()));
+}
+
+#[cfg(not(target_os = "windows"))]
+lazy_static::lazy_static! {
+    static ref KEYBOARD: Arc<Mutex<RdevKeyboard>> = Arc::new(Mutex::new(RdevKeyboard::new().unwrap()));
 }
 
 fn main() {
