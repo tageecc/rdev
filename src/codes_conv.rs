@@ -115,27 +115,93 @@ conv_keycodes!(
     android_code_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_win_scancode,
+    usb_hid_code_to_win_scancode,
     usb_hid_key_from_code,
     win_scancode_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_linux_code,
+    usb_hid_code_to_linux_code,
     usb_hid_key_from_code,
     linux_code_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_macos_code,
+    usb_hid_code_to_macos_code,
     usb_hid_key_from_code,
     macos_code_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_macos_iso_code,
+    usb_hid_code_to_macos_iso_code,
     usb_hid_key_from_code,
     macos_iso_code_from_key
 );
 conv_keycodes!(
-    usb_hide_code_to_android_key_code,
+    usb_hid_code_to_android_key_code,
     usb_hid_key_from_code,
     android_code_from_key
 );
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn test_usb_hid_code_to_macos_code() {
+        for code in 0..=65535 {
+            let key = crate::keycodes::macos::key_from_code(code);
+            if matches!(key, crate::Key::Unknown(..) | crate::Key::RawKey(..)) {
+                continue;
+            }
+            let usb_hid = crate::keycodes::usb_hid::code_from_key(key);
+            if let Some(usb_hid) = usb_hid {
+                if usb_hid == 0 {
+                    continue;
+                }
+                if let Some(code2) = super::usb_hid_code_to_macos_code(usb_hid) {
+                    assert_eq!(code, code2 as u32)
+                } else {
+                    assert!(false, "We could not convert back code: {:?}", code);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_usb_hid_code_to_windows_scan_code() {
+        for code in 1..=65535 {
+            let key = crate::keycodes::windows::key_from_scancode(code);
+            if matches!(key, crate::Key::Unknown(..) | crate::Key::RawKey(..)) {
+                continue;
+            }
+            let usb_hid = crate::keycodes::usb_hid::code_from_key(key);
+            if let Some(usb_hid) = usb_hid {
+                if usb_hid == 0 {
+                    continue;
+                }
+                if let Some(code2) = super::usb_hid_code_to_win_scancode(usb_hid) {
+                    assert_eq!(code, code2 as u32)
+                } else {
+                    assert!(false, "We could not convert back code: {:?}", code);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_usb_hid_code_to_linux_key_code() {
+        for code in 0..=65535 {
+            let key = crate::keycodes::linux::key_from_code(code);
+            if matches!(key, crate::Key::Unknown(..) | crate::Key::RawKey(..)) {
+                continue;
+            }
+            let usb_hid = crate::keycodes::usb_hid::code_from_key(key);
+            if let Some(usb_hid) = usb_hid {
+                if usb_hid == 0 {
+                    continue;
+                }
+                if let Some(code2) = super::usb_hid_code_to_linux_code(usb_hid) {
+                    assert_eq!(code, code2 as u32)
+                } else {
+                    assert!(false, "We could not convert back code: {:?}", code);
+                }
+            }
+        }
+    }
+}
