@@ -30,7 +30,7 @@ fn workaround_fn(event: CGEvent, keycode: CGKeyCode) -> CGEvent {
         // `kVK_F20` does not stick `CGEventFlags::CGEventFlagSecondaryFn`
         kVK_F1 | kVK_F2 | kVK_F3 | kVK_F4 | kVK_F5 | kVK_F6 | kVK_F7 | kVK_F8 | kVK_F9
         | kVK_F10 | kVK_F11 | kVK_F12 | kVK_F13 | kVK_F14 | kVK_F15 | kVK_F16 | kVK_F17
-        | kVK_F18 | kVK_F19 | kVK_ANSI_KeypadClear | kVK_Help | kVK_ForwardDelete | kVK_Home
+        | kVK_F18 | kVK_F19 | kVK_ANSI_KeypadClear | kVK_ForwardDelete | kVK_Home
         | kVK_End | kVK_PageDown | kVK_PageUp
         | 129 // Spotlight Search
         | 130 // Application
@@ -47,6 +47,14 @@ fn workaround_fn(event: CGEvent, keycode: CGKeyCode) -> CGEvent {
                 flags
                     & (!(CGEventFlags::CGEventFlagSecondaryFn
                         | CGEventFlags::CGEventFlagNumericPad)),
+            );
+        }
+        kVK_Help => {
+            let flags = event.get_flags();
+            event.set_flags(
+                flags
+                    & (!(CGEventFlags::CGEventFlagSecondaryFn
+                        | CGEventFlags::CGEventFlagHelp)),
             );
         }
         _ => {}
