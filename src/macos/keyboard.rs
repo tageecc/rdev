@@ -296,7 +296,7 @@ impl KeyboardState for Keyboard {
 #[allow(clippy::identity_op)]
 pub unsafe fn flags_to_state(flags: u64) -> ModifierState {
     let has_alt = flags & NSEventModifierFlagOption;
-    // let has_caps_lock = flags & NSEventModifierFlagCapsLock;
+    let has_caps_lock = flags & NSEventModifierFlagCapsLock;
     let has_control = flags & NSEventModifierFlagControl;
     let has_shift = flags & NSEventModifierFlagShift;
     let has_meta = flags & NSEventModifierFlagCommand;
@@ -304,9 +304,9 @@ pub unsafe fn flags_to_state(flags: u64) -> ModifierState {
     if has_alt != 0 {
         modifier |= optionKey;
     }
-    // if has_caps_lock != 0 {
-    //     modifier += CAPS_LOCK_BIT;
-    // }
+    if has_caps_lock != 0 {
+        modifier |= alphaLock;
+    }
     if has_control != 0 {
         modifier |= controlKey
     }
