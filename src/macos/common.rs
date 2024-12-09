@@ -209,14 +209,15 @@ pub unsafe fn convert(
                 let code =
                     cg_event.get_integer_value_field(EventField::KEYBOARD_EVENT_KEYCODE) as u32;
                 if code == kVK_Shift as _ || code == kVK_RightShift as _ {
-                    return None;
+                    None
+                } else {
+                    let flags = cg_event.get_flags();
+                    let s = keyboard_state.create_unicode_for_key(code, flags);
+                    // if s.is_none() {
+                    //     s = Some(key_to_name(_k).to_owned())
+                    // }
+                    s
                 }
-                let flags = cg_event.get_flags();
-                let s = keyboard_state.create_unicode_for_key(code, flags);
-                // if s.is_none() {
-                //     s = Some(key_to_name(_k).to_owned())
-                // }
-                s
             }
             EventType::KeyRelease(..) => None,
             _ => None,
