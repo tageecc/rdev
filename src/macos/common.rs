@@ -175,6 +175,20 @@ pub unsafe fn convert(
                 y: point.y,
             })
         }
+        CGEventType::LeftMouseDragged => {
+            let point = cg_event.location();
+            Some(EventType::MouseMove {
+                x: point.x,
+                y: point.y,
+            })
+        }
+        CGEventType::RightMouseDragged => {
+            let point = cg_event.location();
+            Some(EventType::MouseMove {
+                x: point.x,
+                y: point.y,
+            })
+        }
         CGEventType::KeyDown => {
             code = get_code(cg_event)?;
             Some(EventType::KeyPress(key_from_code(code)))
